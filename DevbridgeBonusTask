@@ -1,0 +1,66 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Scanner;
+
+/**
+ *
+ * @author Miglė Morta Pumputytė
+ */
+public class DevbridgeBonusTask {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        
+        int startYear;
+        int endYear;
+        try (Scanner scan = new Scanner(System.in)) {
+            System.out.print("Enter a year you wish to START with (no less than four digits): ");
+            startYear = scan.nextInt();//read start date
+            while(startYear<1000){//check if it is valid
+                System.out.println("Please enter a number with four or more digits!");
+                startYear = scan.nextInt();//if it is not valid, enter a suitable date
+            }   System.out.print("Enter a year you wish to END with (no less than four digits): ");
+            endYear = scan.nextInt(); //read end date
+            while(endYear<1000||endYear<=startYear){//check if it is valid
+                System.out.println("Please enter a DIFFERENT number that is BIGGER than the start year and has FOUR or more digits!");
+                endYear = scan.nextInt();//if it is not valid, enter a suitable date
+            }
+        }
+        
+        printBonusDatesBetween(startYear, endYear);//start the search for needed dates
+        
+    }
+    
+    static void printBonusDatesBetween(int fromYear, int toYear){
+        int numberOfDates = 0;//variable for checking if there are any suitable dates at all
+        for(int i=fromYear; i<toYear; i++){
+            String year = String.valueOf(i);
+            StringBuilder month = new StringBuilder(), day = new StringBuilder();
+            month = ((month.append(year.substring(2,4))).reverse());//find the reversed month number
+            day = ((day.append(year.substring(0,2))).reverse());//find the reversed day number
+            boolean existence = doesDateExist(year + "/" + month + "/" + day);//check if such a date exists
+            if (existence == true){
+                System.out.println(year + "/" + month + "/" + day);//if it does, print the full date on screen
+                numberOfDates++;
+            }
+        }
+        if(numberOfDates==0) System.out.println("There are no fitting dates in this time period.");//print a message if there are no fitting dates
+    }
+    
+    private static boolean doesDateExist(String date) {//check if a date is valid
+        String formatString = "yyyy/MM/dd";
+
+        try {
+            SimpleDateFormat format = new SimpleDateFormat(formatString);
+            format.setLenient(false);
+            format.parse(date);
+        } catch (ParseException | IllegalArgumentException e) {
+            return false;
+        }
+
+        return true;
+    }
+    
+}
